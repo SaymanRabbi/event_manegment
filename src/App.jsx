@@ -1,45 +1,49 @@
+import axios from 'axios'
 import { useEffect, useState } from 'react'
 import './App.css'
 
 function App() {
- const [data,setData] =useState([])
+  // store data
+  const [data,setData] =useState([])
+  // store data
+
+  // onsubmit data 
 const OnSubmitData = async(e) => {
   e.preventDefault()
   const data = e.target.text.value
+  const dataEvent = {
+    date:data,
+    title:"Event Testing Titel",
+    address:"Event Testing Address"
+  }
   try {
-   await fetch('http://localhost:5000/api/v1/event/create',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({
-        date:data,
-        title:'title6',
-        address:'addres6'
-      })
-    }).then(res=>res.json()).then(res=>{
+   await  axios.post('http://localhost:5000/api/v1/event/create',dataEvent)
+    .then(res=>res.json()).then(res=>{
       setData([...data,res?.data])
-      e.target.text.value=''
+      e.target.reset()
     })
    
   } catch (error) {
     console.log(error)
   }
 }
+  // onsubmit data 
+  // get all data and instent update
+
 useEffect(()=>{
      async function getData(){
       try {
-        const res = await fetch('http://localhost:5000/api/v1/event/getevent')
-        const data = await res.json()
-        setData(data?.data)
+        const res = await axios.get('http://localhost:5000/api/v1/event/getevent')
+        setData(res?.data?.data)
       } catch (error) {
         console.log(error)
       }
      } 
       getData()  
   }
- 
+//  use dependancy array
 ,[data])
+  // get all data and instent update
   return (
     <>
       <form onSubmit={OnSubmitData}>
